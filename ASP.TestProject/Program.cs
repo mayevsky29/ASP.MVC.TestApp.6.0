@@ -5,24 +5,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
-//builder.Services.AddDbContext<AppEFContext>(options =>
-//               options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
-//builder.Services.AddIdentity<AppUser, AppRole>(options =>
-//{
-//    options.Stores.MaxLengthForKeys = 128;
-//    options.Password.RequireDigit = false;
-//    options.Password.RequiredLength = 5;
-//    options.Password.RequireNonAlphanumeric = false;
-//    options.Password.RequireUppercase = false;
-//    options.Password.RequireLowercase = false;
-//})
-//   .AddEntityFrameworkStores<AppEFContext>();
 
 var app = builder.Build();
 
@@ -33,7 +21,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+// усуває помилку при додаванні в бд даних - Cannot write DateTime with Kind=UTC to PostgreSQL type 'timestamp without time zone
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
